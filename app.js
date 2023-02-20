@@ -40,7 +40,7 @@ app.use(function(err, req, res, next) {
 // debug module
 var debug = require('debug')('my-application');
 // set up the port
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3001);
 
 // start monitoring
 var server = app.listen(app.get('port'), function() {
