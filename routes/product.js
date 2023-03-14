@@ -21,7 +21,7 @@ router.post('/latest', function(req, res) {
   return res.send(result.data);
 }).catch((e)=>{
   return res.status(400).send(e);
-});
+  });
 });
 
 
