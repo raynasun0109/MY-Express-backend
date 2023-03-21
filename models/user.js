@@ -31,13 +31,45 @@ getOneUser = (params) => new Promise((resolve, reject) => {
 });
 
 /*
+ user login
+*/
+userLogin = (params) => new Promise((resolve, reject) => {
+    const {
+        password,email
+    } = params;
+    const sql='SELECT * FROM `MY-Express-database`.user WHERE email ='+ `'${email}' AND password= '${password}'`;
+
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            if (results[0]){
+                const payload={
+                    code:1,
+                    msg:"Login Successfully",
+                    data:results
+                }
+                resolve(payload);
+            } else{
+                const payload={
+                    code:0,
+                    msg:"Login Failed",
+                    data:[...results]
+                } 
+                resolve(payload);
+            }
+            
+        }
+    });
+});
+
+/*
 Resigter one user
 */
 registerOneUser = (params) => new Promise((resolve, reject) => {
     const {
         first_name, last_name,password,email,type
     } = params;
-    console.log(4444,params);
     const sql_to_check_existed_user='SELECT * from `MY-Express-database`.user WHERE email='+`'${email}'`;
     const sql_to_register_user='INSERT INTO `MY-Express-database`.user (uuid, first_name, last_name, email, password, type,created_at,update_at) VALUES ('+ `'${uuid}','${first_name}','${last_name}', '${email}', '${password}', ${type},${currentTime},${currentTime} )`;
 
@@ -72,5 +104,5 @@ registerOneUser = (params) => new Promise((resolve, reject) => {
 });
 
 module.exports = {
-    getAllUser,getOneUser,registerOneUser
+    getAllUser,getOneUser,registerOneUser,userLogin
 }

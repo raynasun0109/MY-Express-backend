@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const {getAllUser,getOneUser,registerOneUser} = require('./../models/User');
+const {getAllUser,getOneUser,registerOneUser,userLogin} = require('./../models/User');
 
 
 router.get('/', function(req, res) {
@@ -36,5 +36,13 @@ router.post('/register/one', function(req, res) {
   });
 });
 
+/* user login */
+router.post('/login', function(req, res) {
+  userLogin(req.body).then((result)=>{
+    return res.send(result);
+}).catch((e)=>{
+    return res.status(400).send(e);
+  });
+});
 
 module.exports = router;

@@ -26,8 +26,6 @@ getLatestProducts = (params) => new Promise((resolve, reject) => {
                 code:1,
                 msg:"Successfully retrive the latest data",
                 data:[...results]
-                    
-                
             }
             resolve(payload)
         }
