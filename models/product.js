@@ -16,18 +16,16 @@ getAllProducts = () => new Promise((resolve, reject) => {
 /*
 Retriving the latest product data
 */
-getLatestProducts = (res) => new Promise((resolve, reject) => {
-    const sql='SELECT * FROM `MY-Express-database`.product ORDER BY created_at DESC LIMIT'+` ${res.number};` 
+getLatestProducts = (params) => new Promise((resolve, reject) => {
+    const sql='SELECT * FROM `MY-Express-database`.product ORDER BY created_at DESC LIMIT'+` ${params.number};` 
     connection.query(sql, function (error, results, fields) {
         if (error){
             reject(error);
         }else{
             const payload={
-                code:0,
+                code:1,
                 msg:"Successfully retrive the latest data",
                 data:[...results]
-                    
-                
             }
             resolve(payload)
         }

@@ -1,22 +1,13 @@
 var mysql = require('mysql');
 
 //configuration
-var connection = mysql.createConnection({
-  host:"localhost",
-  user:"root",
-  password:"123456",
-  port: '3306'
-});
-
-var env = process.env.NODE_ENV || 'development';
-
 // if(env=="development"){
-// var connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     port: '3306',
-//     password: '12345678'
-// });
+  var connection = mysql.createConnection({
+    host:"localhost",
+    user:"root",
+    password:"123456",
+    port: '3306'
+  });
 // }else{
 //     var connection = mysql.createConnection({
 //         host: process.env.RDS_HOSTNAME,
@@ -25,7 +16,7 @@ var env = process.env.NODE_ENV || 'development';
 //         port: process.env.RDS_PORT
 //     });
 // }
-
+var env = process.env.NODE_ENV || 'development';
 
 connection.connect(function(err) {
     if (err) {
