@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const {getAllProducts,getLatestProducts} = require('./../models/product');
+const {getAllProducts,getLatestProducts,getOneProduct} = require('./../models/product');
 
 
 
@@ -24,5 +24,13 @@ router.post('/latest', function(req, res) {
   });
 });
 
+/* get one product */
+router.post('/get/one', function(req, res) {
+  getOneProduct(req.body).then((result)=>{
+  return res.send(result.data);
+}).catch((e)=>{
+  return res.status(400).send(e);
+  });
+});
 
 module.exports = router;
