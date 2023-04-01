@@ -64,14 +64,47 @@ userLogin = (params) => new Promise((resolve, reject) => {
 });
 
 /*
+Update one user
+*/
+updateOneUser = (params) => new Promise((resolve, reject) => {
+    const {
+        first_name,password,email,last_name,type,shopping_cart,uuid
+    } = params;
+    const sql="UPDATE `MY-Express-database`.user SET email = "+`"${email}",password = "${password}",type=${type},last_name="${last_name}",shopping_cart='${shopping_cart}',first_name="${first_name}", update_at="${currentTime}" WHERE uuid="${uuid}"`;
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            if (results){
+                const payload={
+                    code:1,
+                    msg:"Update Successfully",
+                    data:results
+                }
+                resolve(payload);
+            } else{
+                const payload={
+                    code:0,
+                    msg:"Update Failed",
+                    data:[...results]
+                } 
+                resolve(payload);
+            }
+            
+        }
+    });
+});
+
+/*
 Resigter one user
 */
 registerOneUser = (params) => new Promise((resolve, reject) => {
     const {
         first_name, last_name,password,email,type
     } = params;
+    
     const sql_to_check_existed_user='SELECT * from `MY-Express-database`.user WHERE email='+`'${email}'`;
-    const sql_to_register_user='INSERT INTO `MY-Express-database`.user (uuid, first_name, last_name, email, password, type,created_at,update_at) VALUES ('+ `'${uuid}','${first_name}','${last_name}', '${email}', '${password}', ${type},${currentTime},${currentTime} )`;
+    const sql_to_register_user='INSERT INTO `MY-Express-database`.user (uuid, first_name, last_name, email, password, type,created_at,update_at,shopping_cart) VALUES ('+ `'${uuid}','${first_name}','${last_name}', '${email}', '${password}', ${type},${currentTime},${currentTime},'[]' )`;
 
     connection.query(sql_to_check_existed_user, function (error, results, fields) {
         if (error){
@@ -104,5 +137,5 @@ registerOneUser = (params) => new Promise((resolve, reject) => {
 });
 
 module.exports = {
-    getAllUser,getOneUser,registerOneUser,userLogin
+    getAllUser,getOneUser,registerOneUser,userLogin,updateOneUser
 }

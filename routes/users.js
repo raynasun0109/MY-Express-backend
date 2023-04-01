@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const {getAllUser,getOneUser,registerOneUser,userLogin} = require('./../models/User');
+const {getAllUser,getOneUser,registerOneUser,userLogin,updateOneUser} = require('./../models/User');
 
 
 router.get('/', function(req, res) {
@@ -35,6 +35,16 @@ router.post('/register/one', function(req, res) {
     return res.status(400).send(e);
   });
 });
+
+/* update user one */
+router.post('/update/one', function(req, res) {
+  updateOneUser(req.body).then((result)=>{
+    return res.send(result);
+}).catch((e)=>{
+    return res.status(400).send(e);
+  });
+});
+
 
 /* user login */
 router.post('/login', function(req, res) {
