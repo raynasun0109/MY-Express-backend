@@ -70,7 +70,8 @@ updateOneUser = (params) => new Promise((resolve, reject) => {
     const {
         first_name,password,email,last_name,type,shopping_cart,uuid
     } = params;
-    const sql="UPDATE `MY-Express-database`.user SET email = "+`"${email}",password = "${password}",type=${type},last_name="${last_name}",shopping_cart='${shopping_cart}',first_name="${first_name}", update_at="${currentTime}" WHERE uuid="${uuid}"`;
+    const sql="UPDATE `MY-Express-database`.user SET email = "+`"${email}",password = "${password}",type="${type}",last_name="${last_name}",shopping_cart='${shopping_cart}',first_name="${first_name}", update_at="${currentTime}" WHERE uuid="${uuid}"`;
+    console.log(shopping_cart)
     connection.query(sql, function (error, results, fields) {
         if (error){
             reject(error);
@@ -79,7 +80,7 @@ updateOneUser = (params) => new Promise((resolve, reject) => {
                 const payload={
                     code:1,
                     msg:"Update Successfully",
-                    data:results
+                    data:params
                 }
                 resolve(payload);
             } else{
