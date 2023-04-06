@@ -9,10 +9,10 @@ Add one new transaction
 */
 addOneTransaction = (params) => new Promise((resolve, reject) => {
     const {
-        uuid, merchant_uuid,order_uuid,product_uuid,amount,status,user_uuid
+        uuid, merchant_uuid,order_uuid,product_content,status,user_uuid
     } = params;
     
-    const sql ='INSERT INTO `MY-Express-database`.transaction (uuid,merchant_uuid,order_uuid,product_uuid,amount,status,user_uuid,created_at,update_at) VALUES ('+ `'${uuid}','${merchant_uuid}','${order_uuid}','${product_uuid}','${amount}','${status}','${user_uuid}',${currentTime},${currentTime})`;
+    const sql ='INSERT INTO `MY-Express-database`.transaction (uuid,merchant_uuid,order_uuid,product_content,status,user_uuid,created_at,update_at) VALUES ('+ `'${uuid}','${merchant_uuid}','${order_uuid}','${product_content}','${status}','${user_uuid}',${currentTime},${currentTime})`;
     connection.query(sql, function (error, results, fields) {
         if (error){
             reject(error);
