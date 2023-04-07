@@ -59,6 +59,8 @@ router.post('/update/one', function(req, res) {
   });
 });
 
+
+
 /* delete one product */
 router.post('/delete/one', function(req, res) {
   deleteOneProduct(req.body).then((result)=>{

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const {getAllUser,getOneUser,registerOneUser,userLogin,updateOneUser} = require('./../models/User');
+const {getAllUser,getOneUser,registerOneUser,userLogin,updateOneUser,fetchShoppingCart,
+  updateShoppingCart} = require('./../models/User');
 
 
 router.get('/', function(req, res) {
@@ -52,6 +53,24 @@ router.post('/login', function(req, res) {
     return res.send(result);
 }).catch((e)=>{
     return res.status(400).send(e);
+  });
+});
+
+/* fetch shopping cart by uuid */
+router.post('/get/shoppingcart/one', function(req, res) {
+  fetchShoppingCart(req.body).then((result)=>{
+  return res.send(result.data);
+}).catch((e)=>{
+  return res.status(400).send(e);
+  });
+});
+
+/* update shopping cart by uuid */
+router.post('/update/shoppingcart/one', function(req, res) {
+  updateShoppingCart(req.body).then((result)=>{
+  return res.send(result.data);
+}).catch((e)=>{
+  return res.status(400).send(e);
   });
 });
 

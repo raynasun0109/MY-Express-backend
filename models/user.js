@@ -71,7 +71,7 @@ updateOneUser = (params) => new Promise((resolve, reject) => {
         first_name,password,email,last_name,type,shopping_cart,uuid
     } = params;
     const sql="UPDATE `MY-Express-database`.user SET email = "+`"${email}",password = "${password}",type="${type}",last_name="${last_name}",shopping_cart='${shopping_cart}',first_name="${first_name}", update_at="${currentTime}" WHERE uuid="${uuid}"`;
-    console.log(shopping_cart)
+    // console.log(shopping_cart)
     connection.query(sql, function (error, results, fields) {
         if (error){
             reject(error);
@@ -137,6 +137,52 @@ registerOneUser = (params) => new Promise((resolve, reject) => {
     });
 });
 
+/*
+Retriving shopping cart by uuid
+*/
+updateShoppingCart = (params) => new Promise((resolve, reject) => {
+    const {uuid,shopping_cart}=params;
+    const sql="UPDATE `MY-Express-database`.user SET shopping_cart = "+`'${shopping_cart}',update_at="${currentTime}" WHERE uuid="${uuid}"`;
+    // console.log(params.uuid)
+    // console.log(params.shopping_cart)
+console.log(params)
+    connection.query(sql, function (error, results, fields) {
+        // console.log(error)
+
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Successfully retrieve shopping cart",
+                data:[results]
+            }
+            resolve(payload)
+        }
+    });
+});
+
+/*
+Update shopping cart by uuid
+*/
+fetchShoppingCart = (params) => new Promise((resolve, reject) => {
+    const {uuid}=params;
+    const sql='SELECT * FROM `MY-Express-database`.user WHERE uuid='+` '${uuid}';`
+    
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Successfully update shopping cart",
+                data:[...results]
+            }
+            resolve(payload)
+        }
+    });
+});
+
 module.exports = {
-    getAllUser,getOneUser,registerOneUser,userLogin,updateOneUser
+    getAllUser,getOneUser,registerOneUser,userLogin,updateOneUser,fetchShoppingCart,updateShoppingCart
 }

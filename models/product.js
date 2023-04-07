@@ -148,7 +148,11 @@ updateOneProduct = (params) => new Promise((resolve, reject) => {
 
 });
 
+
+
+
+
 module.exports = {
     getAllProducts,getLatestProducts,getOneProduct,addOneProduct,updateOneProduct,
-    getProductsFromMerchant,deleteOneProduct
+    getProductsFromMerchant,deleteOneProduct,fetchShoppingCart
 }
