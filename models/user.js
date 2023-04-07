@@ -64,14 +64,48 @@ userLogin = (params) => new Promise((resolve, reject) => {
 });
 
 /*
+Update one user
+*/
+updateOneUser = (params) => new Promise((resolve, reject) => {
+    const {
+        first_name,password,email,last_name,type,shopping_cart,uuid
+    } = params;
+    const sql="UPDATE `MY-Express-database`.user SET email = "+`"${email}",password = "${password}",type="${type}",last_name="${last_name}",shopping_cart='${shopping_cart}',first_name="${first_name}", update_at="${currentTime}" WHERE uuid="${uuid}"`;
+    // console.log(shopping_cart)
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            if (results){
+                const payload={
+                    code:1,
+                    msg:"Update Successfully",
+                    data:params
+                }
+                resolve(payload);
+            } else{
+                const payload={
+                    code:0,
+                    msg:"Update Failed",
+                    data:[...results]
+                } 
+                resolve(payload);
+            }
+            
+        }
+    });
+});
+
+/*
 Resigter one user
 */
 registerOneUser = (params) => new Promise((resolve, reject) => {
     const {
         first_name, last_name,password,email,type
     } = params;
+    
     const sql_to_check_existed_user='SELECT * from `MY-Express-database`.user WHERE email='+`'${email}'`;
-    const sql_to_register_user='INSERT INTO `MY-Express-database`.user (uuid, first_name, last_name, email, password, type,created_at,update_at) VALUES ('+ `'${uuid}','${first_name}','${last_name}', '${email}', '${password}', ${type},${currentTime},${currentTime} )`;
+    const sql_to_register_user='INSERT INTO `MY-Express-database`.user (uuid, first_name, last_name, email, password, type,created_at,update_at,shopping_cart) VALUES ('+ `'${uuid}','${first_name}','${last_name}', '${email}', '${password}', ${type},${currentTime},${currentTime},'[]' )`;
 
     connection.query(sql_to_check_existed_user, function (error, results, fields) {
         if (error){
@@ -103,6 +137,52 @@ registerOneUser = (params) => new Promise((resolve, reject) => {
     });
 });
 
+/*
+Retriving shopping cart by uuid
+*/
+updateShoppingCart = (params) => new Promise((resolve, reject) => {
+    const {uuid,shopping_cart}=params;
+    const sql="UPDATE `MY-Express-database`.user SET shopping_cart = "+`'${shopping_cart}',update_at="${currentTime}" WHERE uuid="${uuid}"`;
+    // console.log(params.uuid)
+    // console.log(params.shopping_cart)
+console.log(params)
+    connection.query(sql, function (error, results, fields) {
+        // console.log(error)
+
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Successfully retrieve shopping cart",
+                data:[results]
+            }
+            resolve(payload)
+        }
+    });
+});
+
+/*
+Update shopping cart by uuid
+*/
+fetchShoppingCart = (params) => new Promise((resolve, reject) => {
+    const {uuid}=params;
+    const sql='SELECT * FROM `MY-Express-database`.user WHERE uuid='+` '${uuid}';`
+    
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Successfully update shopping cart",
+                data:[...results]
+            }
+            resolve(payload)
+        }
+    });
+});
+
 module.exports = {
-    getAllUser,getOneUser,registerOneUser,userLogin
+    getAllUser,getOneUser,registerOneUser,userLogin,updateOneUser,fetchShoppingCart,updateShoppingCart
 }

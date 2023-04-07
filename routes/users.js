@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const {getAllUser,getOneUser,registerOneUser,userLogin} = require('./../models/User');
+const {getAllUser,getOneUser,registerOneUser,userLogin,updateOneUser,fetchShoppingCart,
+  updateShoppingCart} = require('./../models/User');
 
 
 router.get('/', function(req, res) {
@@ -36,12 +37,40 @@ router.post('/register/one', function(req, res) {
   });
 });
 
+/* update user one */
+router.post('/update/one', function(req, res) {
+  updateOneUser(req.body).then((result)=>{
+    return res.send(result);
+}).catch((e)=>{
+    return res.status(400).send(e);
+  });
+});
+
+
 /* user login */
 router.post('/login', function(req, res) {
   userLogin(req.body).then((result)=>{
     return res.send(result);
 }).catch((e)=>{
     return res.status(400).send(e);
+  });
+});
+
+/* fetch shopping cart by uuid */
+router.post('/get/shoppingcart/one', function(req, res) {
+  fetchShoppingCart(req.body).then((result)=>{
+  return res.send(result.data);
+}).catch((e)=>{
+  return res.status(400).send(e);
+  });
+});
+
+/* update shopping cart by uuid */
+router.post('/update/shoppingcart/one', function(req, res) {
+  updateShoppingCart(req.body).then((result)=>{
+  return res.send(result.data);
+}).catch((e)=>{
+  return res.status(400).send(e);
   });
 });
 
