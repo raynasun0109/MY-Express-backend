@@ -11,10 +11,10 @@ addOneOrder = (params) => new Promise((resolve, reject) => {
     const {
         transaction_uuids, user_uuid
     } = params;
-    console.log(params)
+    // console.log(params)
     const sql ='INSERT INTO `MY-Express-database`.orders (uuid,transaction_uuids, user_uuid,created_at,update_at) VALUES ('+ `'${uuid}','${transaction_uuids}','${user_uuid}',${currentTime},${currentTime})`;
     connection.query(sql, function (error, results, fields) {
-        console.log(error)
+        // console.log(error)
 
         if (error){
             reject(error);
@@ -29,6 +29,28 @@ addOneOrder = (params) => new Promise((resolve, reject) => {
     })
 });
 
+
+/*
+Get all orders from one user based on uuid
+*/
+getOrdersFromOneUser = (params) => new Promise((resolve, reject) => {
+    const {uuid}=params;
+
+    const sql='SELECT * FROM `MY-Express-database`.orders WHERE user_uuid ='+`'${uuid}' ORDER BY created_at DESC;`
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Successfully retrive the order data",
+                data:[...results]
+            }
+            resolve(payload)
+        }
+    });
+});
+
 module.exports = {
-    addOneOrder
+    addOneOrder,getOrdersFromOneUser
 }

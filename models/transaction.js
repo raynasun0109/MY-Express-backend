@@ -27,6 +27,47 @@ addOneTransaction = (params) => new Promise((resolve, reject) => {
     })
 });
 
+/*
+Get one transcation from one order based on uuid
+*/
+getOneTranscationFromOneOrder = (params) => new Promise((resolve, reject) => {
+    const {uuid}=params;
+    // console.log(params)
+    const sql='SELECT * FROM `MY-Express-database`.transaction WHERE uuid ='+`'${uuid}' ORDER BY created_at DESC;`
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Successfully retrive the Transcation data",
+                data:[...results]
+            }
+            resolve(payload)
+        }
+    });
+});
+
+/*
+Get one transcation from one order based on uuid
+*/
+getTranscationFromSameOrder = (params) => new Promise((resolve, reject) => {
+    const {uuid}=params;
+    const sql='SELECT * FROM `MY-Express-database`.transaction WHERE user_uuid ='+`'${uuid}' ORDER BY created_at DESC;`
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Successfully retrive the Transcation data",
+                data:[...results]
+            }
+            resolve(payload)
+        }
+    });
+});
+
 module.exports = {
-    addOneTransaction
+    addOneTransaction,getOneTranscationFromOneOrder,getTranscationFromSameOrder
 }
