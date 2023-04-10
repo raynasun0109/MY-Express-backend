@@ -57,7 +57,6 @@ getTranscationFromSameOrder = (params) => new Promise((resolve, reject) => {
     const checkStatus=status?`= '${status}'`:"IS NOT NULL";
     const sql='SELECT * FROM `MY-Express-database`.transaction WHERE user_uuid ='+`'${uuid}' AND status ${checkStatus} ORDER BY created_at DESC;`
     connection.query(sql, function (error, results, fields) {
-        console.log(sql)
         if (error){
             reject(error);
         }else{
