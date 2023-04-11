@@ -145,7 +145,7 @@ updateShoppingCart = (params) => new Promise((resolve, reject) => {
     const sql="UPDATE `MY-Express-database`.user SET shopping_cart = "+`'${shopping_cart}',update_at="${currentTime}" WHERE uuid="${uuid}"`;
     // console.log(params.uuid)
     // console.log(params.shopping_cart)
-console.log(params)
+// console.log(params)
     connection.query(sql, function (error, results, fields) {
         // console.log(error)
 
