@@ -145,7 +145,6 @@ updateOneProduct = (params) => new Promise((resolve, reject) => {
             resolve(payload);
         }
     })
-
 });
 
 
