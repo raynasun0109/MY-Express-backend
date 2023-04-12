@@ -70,6 +70,52 @@ getTranscationFromSameOrder = (params) => new Promise((resolve, reject) => {
     });
 });
 
+/*
+Get transcations from same merchant based on merchant_uuid and status
+*/
+getTranscationFromSameMerchant = (params) => new Promise((resolve, reject) => {
+    const {merchant_uuid,status}=params;
+    const checkStatus=status?`= '${status}'`:"IS NOT NULL";
+    const sql='SELECT transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} ORDER BY created_at DESC;`
+
+    connection.query(sql, function (error, results, fields) {
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Successfully retrive the Transcation data",
+                data:[...results]
+            }
+            resolve(payload)
+        }
+    });
+});
+
+/*
+Update one transaction
+*/
+updateOneTransaction = (params) => new Promise((resolve, reject) => {
+    const {
+        uuid, status
+    } = params;
+    const sql ='UPDATE `MY-Express-database`.transaction SET status='+ `"${status}", update_at = ${currentTime} WHERE uuid="${uuid}"`;
+    connection.query(sql, function (error, results, fields) {
+        // console.log(error)
+        if (error){
+            reject(error);
+        }else{
+            const payload={
+                code:1,
+                msg:"Updated Successfully",
+                data:results
+            }
+            resolve(payload);
+        }
+    })
+});
+
 module.exports = {
-    addOneTransaction,getOneTranscationFromOneOrder,getTranscationFromSameOrder
+    addOneTransaction,getOneTranscationFromOneOrder,getTranscationFromSameOrder,
+    getTranscationFromSameMerchant,updateOneTransaction
 }
