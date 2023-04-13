@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const {addOneTransaction,getOneTranscationFromOneOrder,getTranscationFromSameOrder,
-  getTranscationFromSameMerchant,updateOneTransaction} = require('./../models/transaction');
+  getTranscationFromSameMerchant,updateOneTransaction,getTotalFromTranscation,
+  getDailyTotalFromTranscation,getWeeklyTranscation} = require('./../models/transaction');
 
 /* add one transaction */
 router.post('/add/one', function(req, res) {
@@ -46,6 +47,37 @@ router.post('/get/one/fromSameMerchant', function(req, res) {
  */
 router.post('/update/one', function(req, res) {
   updateOneTransaction(req.body).then((result)=>{
+  return res.send(result.data);
+}).catch((e)=>{
+  return res.status(400).send(e);
+  });
+});
+
+/* get total from specify transcation
+ */
+router.post('/get/total', function(req, res) {
+  getTotalFromTranscation(req.body).then((result)=>{
+  return res.send(result.data);
+}).catch((e)=>{
+  return res.status(400).send(e);
+  });
+});
+
+/* get daily total from specify transcation
+ */
+router.post('/get/total/daily', function(req, res) {
+  getDailyTotalFromTranscation(req.body).then((result)=>{
+  return res.send(result.data);
+}).catch((e)=>{
+  return res.status(400).send(e);
+  });
+});
+
+
+/* get weekly transcation
+ */
+router.post('/get/total/weekly', function(req, res) {
+  getWeeklyTranscation(req.body).then((result)=>{
   return res.send(result.data);
 }).catch((e)=>{
   return res.status(400).send(e);
