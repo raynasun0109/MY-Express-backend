@@ -6,8 +6,17 @@ const uuid=uuidv4();
 /*
 Retriving all the product data
 */
-getAllProducts = () => new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM `MY-Express-database`.product;', function (error, results, fields) {
+getAllProducts = (params) => new Promise((resolve, reject) => {
+    const {
+        name,description,location,category,orderBy
+    } = params;
+    category_check = category?`= '${category}'`:"is not null";
+    name_check = name?`LIKE '%${name}%'`:"is not null";
+    description_check = description?`LIKE '%${description}%'`:"is not null";
+    location_check = location?`LIKE '%${location}%'`:"is not null";
+    orderby_check = orderBy?`= '${orderBy}'`:"created_at";
+
+    connection.query('SELECT * FROM `MY-Express-database`.product WHERE name '+`${name_check} AND category ${category_check} AND description ${description_check} AND location ${location_check} ORDER BY ${orderby_check} DESC;` , function (error, results, fields) {
         if (error){
             reject(error);
         }else{
@@ -23,6 +32,8 @@ Retriving the latest product data with limited number and conditions
 getLatestProducts = (params) => new Promise((resolve, reject) => {
     const {number,category}=params;
     category_check = category?`= '${category}'`:"is not null";
+    number_check = number?`= '${number}'`:"1000000000000";
+
     const sql='SELECT * FROM `MY-Express-database`.product WHERE category '+`${category_check} ORDER BY created_at DESC LIMIT ${number};` 
     connection.query(sql, function (error, results, fields) {
         if (error){
