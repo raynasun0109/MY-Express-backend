@@ -6,7 +6,7 @@ const {getAllProducts,getLatestProducts,getOneProduct,addOneProduct,
 /*
 get all products
 */
-router.get('/all', function(req, res) {
+router.post('/all', function(req, res) {
     getAllProducts(req.body).then((result)=>{
     return res.send(result)
   }).catch((e)=>{
