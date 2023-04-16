@@ -20,8 +20,9 @@ getAllUser = () => new Promise((resolve, reject) => {
 Retriving one user data
 */
 getOneUser = (params) => new Promise((resolve, reject) => {
-    const sql='SELECT * FROM `MY-Express-database`.user WHERE uuid ='+ `${params.uuid}`; 
+    const sql='SELECT * FROM `MY-Express-database`.user WHERE uuid ='+ `'${params.uuid}'`; 
     connection.query(sql, function (error, results, fields) {
+
         if (error){
             reject(error);
         }else{

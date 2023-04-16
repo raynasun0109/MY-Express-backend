@@ -22,7 +22,7 @@ router.get('/test', function(req, res) {
 /* get one user info */
 router.post('/info/one', function(req, res) {
   getOneUser(req.body).then((result)=>{
-    return res.send(result.data);
+    return res.send(result);
 }).catch((e)=>{
     return res.status(400).send(e);
   });

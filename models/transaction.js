@@ -2,23 +2,19 @@ var connection=require('./../config/mysql');
 const { v4: uuidv4} = require('uuid');
 var moment = require('moment');
 const currentTime= JSON.stringify(moment().valueOf());
-const uuid=uuidv4();
-
-const currentWeekStart= moment().startOf('week');
-const currentWeekEnd= moment().endOf('week');
-
-
 
 /*
 Add one new transaction
 */
 addOneTransaction = (params) => new Promise((resolve, reject) => {
     const {
-        uuid, merchant_uuid,order_uuid,product_content,status,user_uuid,total
+        uuid, merchant_uuid,order_uuid,product_content,status,user_uuid,total,address
     } = params;
-    
-    const sql ='INSERT INTO `MY-Express-database`.transaction (uuid,merchant_uuid,order_uuid,product_content,status,user_uuid,created_at,update_at,total) VALUES ('+ `'${uuid}','${merchant_uuid}','${order_uuid}','${product_content}','${status}','${user_uuid}',${currentTime},${currentTime}),'${total}'`;
+    console.log(product_content)
+    const sql ='INSERT INTO `MY-Express-database`.transaction (uuid,merchant_uuid,order_uuid,product_content,status,user_uuid,created_at,update_at,total,address) VALUES ('+ `'${uuid}','${merchant_uuid}','${order_uuid}','${product_content}','${status}','${user_uuid}','${currentTime}','${currentTime}',${total},'${address}')`;
     connection.query(sql, function (error, results, fields) {
+        console.log(error)
+
         if (error){
             reject(error);
         }else{
@@ -82,7 +78,7 @@ getTranscationFromSameMerchant = (params) => new Promise((resolve, reject) => {
     const {merchant_uuid,status}=params;
     const checkStatus=status?`= '${status}'`:"IS NOT NULL";
     // console.log(status)
-    const sql='SELECT transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} ORDER BY created_at DESC;`
+    const sql='SELECT transaction.address AS address, transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} ORDER BY created_at DESC;`
 
     connection.query(sql, function (error, results, fields) {
         if (error){
@@ -130,7 +126,7 @@ getTotalFromTranscation = (params) => new Promise((resolve, reject) => {
     const checkEndTime=end_time?`${end_time}`:"10000000000000";
     const checkStartTime=start_time?`${start_time}`:"0";
 
-    const sql='SELECT transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} AND transaction.created_at < ${checkEndTime} AND transaction.created_at > ${checkStartTime} ORDER BY transaction.created_at DESC;`
+    const sql='SELECT transaction.address AS address, transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} AND transaction.created_at < ${checkEndTime} AND transaction.created_at > ${checkStartTime} ORDER BY transaction.created_at DESC;`
     connection.query(sql, function (error, results, fields) {
 
         if (error){
@@ -162,7 +158,7 @@ getDailyTotalFromTranscation = (params) => new Promise((resolve, reject) => {
     const checkEndTime=end_time?`${end_time}`:"10000000000000";
     const checkStartTime=start_time?`${start_time}`:"0";
 
-    const sql='SELECT transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} AND transaction.created_at < ${checkEndTime} AND transaction.created_at > ${checkStartTime} ORDER BY transaction.created_at DESC;`
+    const sql='SELECT transaction.address AS address,transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} AND transaction.created_at < ${checkEndTime} AND transaction.created_at > ${checkStartTime} ORDER BY transaction.created_at DESC;`
 
     function calculateWeekDate(basisDate = moment().format('YYYY-MM-DD')) {
         let weekDate = [];
@@ -226,7 +222,7 @@ getWeeklyTranscation = (params) => new Promise((resolve, reject) => {
     const checkEndTime=end_time?`${end_time}`:"10000000000000";
     const checkStartTime=start_time?`${start_time}`:"0";
 
-    const sql='SELECT transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} AND transaction.created_at < ${checkEndTime} AND transaction.created_at > ${checkStartTime} ORDER BY transaction.created_at DESC;`
+    const sql='SELECT transaction.address AS address, transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} AND transaction.created_at < ${checkEndTime} AND transaction.created_at > ${checkStartTime} ORDER BY transaction.created_at DESC;`
 
     function calculateWeekDate(basisDate = moment().format('YYYY-MM-DD')) {
         let weekDate = [];
