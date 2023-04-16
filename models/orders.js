@@ -14,7 +14,7 @@ addOneOrder = (params) => new Promise((resolve, reject) => {
     // console.log(params)
     const sql ='INSERT INTO `MY-Express-database`.orders (uuid,transaction_uuids, user_uuid,created_at,update_at) VALUES ('+ `'${uuid}','${transaction_uuids}','${user_uuid}',${currentTime},${currentTime})`;
     connection.query(sql, function (error, results, fields) {
-        // console.log(error)
+        console.log(error)
 
         if (error){
             reject(error);

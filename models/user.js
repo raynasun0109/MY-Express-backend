@@ -20,8 +20,9 @@ getAllUser = () => new Promise((resolve, reject) => {
 Retriving one user data
 */
 getOneUser = (params) => new Promise((resolve, reject) => {
-    const sql='SELECT * FROM `MY-Express-database`.user WHERE uuid ='+ `${params.uuid}`; 
+    const sql='SELECT * FROM `MY-Express-database`.user WHERE uuid ='+ `'${params.uuid}'`; 
     connection.query(sql, function (error, results, fields) {
+        console.log(results,params)
         if (error){
             reject(error);
         }else{
@@ -105,21 +106,25 @@ registerOneUser = (params) => new Promise((resolve, reject) => {
     } = params;
     
     const sql_to_check_existed_user='SELECT * from `MY-Express-database`.user WHERE email='+`'${email}'`;
-    const sql_to_register_user='INSERT INTO `MY-Express-database`.user (uuid, first_name, last_name, email, password, type,created_at,update_at,shopping_cart) VALUES ('+ `'${uuid}','${first_name}','${last_name}', '${email}', '${password}', ${type},${currentTime},${currentTime},'[]' )`;
+    const sql_to_register_user='INSERT INTO `MY-Express-database`.user (uuid, first_name, last_name, email, password, type,created_at,update_at,shopping_cart) VALUES ('+ `'${uuid}','${first_name}','${last_name}', '${email}', '${password}', '${type}','${currentTime}','${currentTime}','[]' )`;
 
     connection.query(sql_to_check_existed_user, function (error, results, fields) {
         if (error){
             reject(error);
         }else{
+            const data={
+                first_name, last_name,password,email,type,uuid,shopping_cart:'[]',created_at:currentTime,update_at:currentTime
+            }
             if (!results[0]){
                 connection.query(sql_to_register_user, function (error1, results1, fields1) {
+                    console.log(error,error1)
                     if (error1){
                         reject(error1);
                     }else{
                         const payload={
                             code:1,
                             msg:"Register Successfully",
-                            data:params
+                            data:[data]
                         }
                         resolve(payload);
                     }
