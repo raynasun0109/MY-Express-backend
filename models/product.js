@@ -8,15 +8,18 @@ Retriving all the product data
 */
 getAllProducts = (params) => new Promise((resolve, reject) => {
     const {
-        name,description,location,category,orderBy
+        name,description,location,category,sortBy,priceFrom,priceTo,sortByKey,sortByItem
     } = params;
     category_check = category?`= '${category}'`:"is not null";
     name_check = name?`LIKE '%${name}%'`:"is not null";
     description_check = description?`LIKE '%${description}%'`:"is not null";
     location_check = location?`LIKE '%${location}%'`:"is not null";
-    orderby_check = orderBy?`= '${orderBy}'`:"created_at";
+    sortByKey_check=sortByKey?sortByKey:"DESC";
+    sortByItem_check=sortByItem?sortByItem:"created_at";
+    price_check = typeof priceFrom =="number" ?`< ${priceTo} AND price > ${priceFrom}`: "is not null"
 
-    connection.query('SELECT * FROM `MY-Express-database`.product WHERE name '+`${name_check} AND category ${category_check} AND description ${description_check} AND location ${location_check} ORDER BY ${orderby_check} DESC;` , function (error, results, fields) {
+    const sql= 'SELECT * FROM `MY-Express-database`.product WHERE name '+`${name_check} AND category ${category_check} AND description ${description_check} AND location ${location_check} AND price ${price_check} ORDER BY ${sortByKey_check} ${sortByItem_check};`;
+    connection.query(sql, function (error, results, fields) {
         if (error){
             reject(error);
         }else{

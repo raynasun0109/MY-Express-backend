@@ -2,7 +2,6 @@ var connection=require('./../config/mysql');
 const { v4: uuidv4} = require('uuid');
 var moment = require('moment');
 const currentTime= JSON.stringify(moment().valueOf());
-const uuid=uuidv4();
 /*
 Retriving all the user data
 */
@@ -20,6 +19,7 @@ getAllUser = () => new Promise((resolve, reject) => {
 Retriving one user data
 */
 getOneUser = (params) => new Promise((resolve, reject) => {
+    
     const sql='SELECT * FROM `MY-Express-database`.user WHERE uuid ='+ `'${params.uuid}'`; 
     connection.query(sql, function (error, results, fields) {
         console.log(results,params)
@@ -104,7 +104,8 @@ registerOneUser = (params) => new Promise((resolve, reject) => {
     const {
         first_name, last_name,password,email,type
     } = params;
-    
+    const uuid=uuidv4();
+
     const sql_to_check_existed_user='SELECT * from `MY-Express-database`.user WHERE email='+`'${email}'`;
     const sql_to_register_user='INSERT INTO `MY-Express-database`.user (uuid, first_name, last_name, email, password, type,created_at,update_at,shopping_cart) VALUES ('+ `'${uuid}','${first_name}','${last_name}', '${email}', '${password}', '${type}','${currentTime}','${currentTime}','[]' )`;
 
