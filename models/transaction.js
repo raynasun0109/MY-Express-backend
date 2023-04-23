@@ -2,19 +2,20 @@ var connection=require('./../config/mysql');
 const { v4: uuidv4} = require('uuid');
 var moment = require('moment');
 const currentTime= JSON.stringify(moment().valueOf());
+const nodemailer = require('nodemailer');
 
 /*
 Add one new transaction
 */
 addOneTransaction = (params) => new Promise((resolve, reject) => {
     const {
-        uuid, merchant_uuid,order_uuid,product_content,status,user_uuid,total,address
+        uuid, merchant_uuid,order_uuid,product_content,status,user_uuid,total,
+        address,client_email
     } = params;
-    console.log(product_content)
-    const sql ='INSERT INTO `MY-Express-database`.transaction (uuid,merchant_uuid,order_uuid,product_content,status,user_uuid,created_at,update_at,total,address) VALUES ('+ `'${uuid}','${merchant_uuid}','${order_uuid}','${product_content}','${status}','${user_uuid}','${currentTime}','${currentTime}',${total},'${address}')`;
+    // console.log(client_email)
+    const sql ='INSERT INTO `MY-Express-database`.transaction (uuid,merchant_uuid,order_uuid,product_content,status,user_uuid,created_at,update_at,total,address,client_email) VALUES ('+ `'${uuid}','${merchant_uuid}','${order_uuid}','${product_content}','${status}','${user_uuid}','${currentTime}','${currentTime}',${total},'${address}','${client_email}')`;
     connection.query(sql, function (error, results, fields) {
-        console.log(error)
-
+        // console.log(error)
         if (error){
             reject(error);
         }else{
@@ -78,7 +79,7 @@ getTranscationFromSameMerchant = (params) => new Promise((resolve, reject) => {
     const {merchant_uuid,status}=params;
     const checkStatus=status?`= '${status}'`:"IS NOT NULL";
     // console.log(status)
-    const sql='SELECT transaction.address AS address, transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} ORDER BY created_at DESC;`
+    const sql='SELECT transaction.client_email AS client_email, transaction.address AS address, transaction.total AS total, transaction.uuid AS transaction_uuid,transaction.update_at AS update_at, transaction.product_content AS product_content,transaction.order_uuid AS order_uuid,transaction.status AS status,transaction.created_at AS created_at,transaction.merchant_uuid AS merchant_uuid, user.first_name AS user_first_name,user.last_name AS user_last_name FROM `MY-Express-database`.transaction INNER JOIN `MY-Express-database`.user '+`ON transaction.user_uuid=user.uuid WHERE merchant_uuid = '${merchant_uuid}' AND status ${checkStatus} ORDER BY created_at DESC;`
 
     connection.query(sql, function (error, results, fields) {
         if (error){
@@ -99,14 +100,42 @@ Update one transaction
 */
 updateOneTransaction = (params) => new Promise((resolve, reject) => {
     const {
-        uuid, status
+        uuid, status,client_email
     } = params;
+    // const email="raynasun0109@gmail.com"
+    let clientEmailContent="";
+    if(status=="Processing"){
+        clientEmailContent=`<h1>Thank you for your order!</h1><p>Dear customer,<br> Your order ${uuid} has been confirmed and processed in the warehouse now!</p>`;
+    } else if (status=="Shipped"){
+        clientEmailContent=`<h1>Thank you for your order!</h1><p>Dear customer,<br> Your order ${uuid} has been dispatched!</p>`;
+    }
+
+    const smtpTransport = nodemailer.createTransport({
+      service: 'QQ',
+      auth: {
+        user: '1003811647@qq.com',
+        pass: 'mdyzixegdprubeae'
+      }})
     const sql ='UPDATE `MY-Express-database`.transaction SET status='+ `"${status}", update_at = ${currentTime} WHERE uuid="${uuid}"`;
     connection.query(sql, function (error, results, fields) {
         // console.log(error)
         if (error){
             reject(error);
         }else{
+            smtpTransport.sendMail({
+                from: '1003811647@qq.com',
+                to: client_email,
+                subject: 'MY Shopaholic - Order Updates',
+                html: clientEmailContent
+        
+              }, function (error, response) {
+                if (error) {
+                  console.log(error);
+                  return error
+                }
+                console.log('Sent successfully')
+                return "success"
+              });
             const payload={
                 code:1,
                 msg:"Updated Successfully",
