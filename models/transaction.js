@@ -102,7 +102,8 @@ updateOneTransaction = (params) => new Promise((resolve, reject) => {
     const {
         uuid, status,client_email
     } = params;
-    // const email="raynasun0109@gmail.com"
+    // console.log(client_email)
+    const email="raynasun0109@gmail.com"
     let clientEmailContent="";
     if(status=="Processing"){
         clientEmailContent=`<h1>Thank you for your order!</h1><p>Dear customer,<br> Your order ${uuid} has been confirmed and processed in the warehouse now!</p>`;

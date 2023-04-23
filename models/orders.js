@@ -12,8 +12,8 @@ addOneOrder = (params) => new Promise((resolve, reject) => {
     const {
         transaction_uuids, user_uuid,client_email
     } = params;
-
-    // const email="raynasun0109@gmail.com"
+    
+    const email="raynasun0109@gmail.com"
     const clientEmailContent=`<h1>Thank you for your order!</h1><p>Dear customer,<br> We're currently processing your order and will send you a confirmation when your item(s) status has been changed. Please find a summary of your order below.</p>`;
     const smtpTransport = nodemailer.createTransport({
       service: 'QQ',
